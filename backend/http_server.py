@@ -98,9 +98,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             self.send_error(404, "Not Found")
 
 def run(server_class=HTTPServer, handler_class=SimpleHTTPRequestHandler):
-    server_address = ('', PORT)
+    server_address = ('', int(PORT))
     httpd = server_class(server_address, handler_class)
-    print(f"Starting server on port {PORT}")
+    print(f"Starting server on port {int(PORT)}")
     httpd.serve_forever()
 
 if __name__ == "__main__":

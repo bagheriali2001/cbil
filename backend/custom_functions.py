@@ -16,6 +16,11 @@ ELASTIC_USERNAME = os.getenv('ELASTIC_USERNAME')
 ELASTIC_PASSWORD = os.getenv('ELASTIC_PASSWORD')
 ELASTIC_INDEX = os.getenv('ELASTIC_INDEX')
 
+print("ELASTIC_URL:", os.getenv("ELASTIC_URL"))
+print("ELASTIC_USERNAME:", os.getenv("ELASTIC_USERNAME"))
+print("ELASTIC_PASSWORD:", os.getenv("ELASTIC_PASSWORD"))
+print("ELASTIC_INDEX:", os.getenv("ELASTIC_INDEX"))
+
 # Initialize Elasticsearch client
 es = Elasticsearch(ELASTIC_URL,
     basic_auth=(ELASTIC_USERNAME, ELASTIC_PASSWORD)
