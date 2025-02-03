@@ -1,0 +1,16 @@
+services:
+  image-processing-front-end:
+    image: image-processing-front-end:latest
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    container_name: image-processing-front-end
+    restart: always
+    networks:
+      - main_network
+    env_file:
+      - ./.env
+
+networks:
+  main_network:
+    name: main_network
