@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import { selectedFeatures } from '$lib/store/store.js'; // Import the store
 
 	export let feedbackImages: Array<string> = [];
 
@@ -10,7 +11,8 @@
 	let selectedResults: Array<string> = [];
 	const dispatch = createEventDispatcher();
 
-	const getFeedback = async (urls: Array<string>) => {
+	const getFeedback = async () => {
+		let urls = feedbackImages;
 		if (urls.length == 0) return;
 
 		isLoading = true;
@@ -20,7 +22,7 @@
 			const response = await fetch(`${PUBLIC_API_URL}/feedback`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ file_keys: urls })
+				body: JSON.stringify({ file_keys: urls, features: $selectedFeatures })
 			});
 			const data = await response.json();
 
@@ -37,7 +39,7 @@
 	};
 
 	if (feedbackImages.length > 0) {
-		getFeedback(feedbackImages);
+		getFeedback();
 	}
 
 	const resetSelection = () => {
@@ -60,7 +62,7 @@
 	const updateResults = () => {
 		feedbackImages = selectedResults;
 		selectedResults = [];
-		getFeedback(feedbackImages);
+		getFeedback();
 	};
 </script>
 
@@ -114,6 +116,7 @@
 
 	<div class="button-group">
 		<button on:click={resetSelection} class="reset-btn">Clear Selection</button>
+		<button on:click={getFeedback} class="retry-btn">Retry Upload</button>
 		{#if selectedResults.length > 0}
 			<button on:click={updateResults} class="update-btn">Update the Results</button>
 		{/if}
@@ -203,7 +206,8 @@
 		}
 
 		.reset-btn,
-		.update-btn {
+		.update-btn,
+		.retry-btn {
 			padding: 10px 20px;
 			font-size: 16px;
 			border-radius: 5px;
@@ -227,6 +231,14 @@
 
 		.update-btn:hover {
 			background-color: #218838;
+		}
+
+		.retry-btn {
+			background-color: #f0ad4e;
+		}
+
+		.retry-btn:hover {
+			background-color: #ec971f;
 		}
 	}
 

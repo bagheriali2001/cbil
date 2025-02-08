@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import { selectedFeatures } from '$lib/store/store.js'; // Import the store
 	console.log('PUBLIC_API_URL: ', PUBLIC_API_URL);
 
 	export let selectedImage: File | null;
@@ -17,6 +18,7 @@
 		isLoading = true;
 		const formData = new FormData();
 		formData.append('image', selectedImage);
+		formData.append('features', JSON.stringify($selectedFeatures)); // Add selectedFeatures
 
 		try {
 			const response = await fetch(`${PUBLIC_API_URL}/upload`, {
@@ -108,6 +110,7 @@
 	</div>
 	<div class="button-group">
 		<button on:click={resetSelection} class="reset-btn">Upload Another Image</button>
+		<button on:click={uploadImage} class="retry-btn">Retry Upload</button>
 		{#if selectedResults.length > 0}
 			<button on:click={startFeedbackLoop} class="update-btn">Update the results</button>
 		{/if}
@@ -209,7 +212,8 @@
 		}
 
 		.reset-btn,
-		.update-btn {
+		.update-btn,
+		.retry-btn {
 			padding: 10px 20px;
 			font-size: 16px;
 			border-radius: 5px;
@@ -233,6 +237,14 @@
 
 		.update-btn:hover {
 			background-color: #218838;
+		}
+
+		.retry-btn {
+			background-color: #f0ad4e;
+		}
+
+		.retry-btn:hover {
+			background-color: #ec971f;
 		}
 	}
 	.image-container {

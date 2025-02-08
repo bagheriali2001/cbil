@@ -34,21 +34,24 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
                 if boundary:
                     # Convert boundary to bytes
-                    boundary = boundary.encode('ascii')  # Convert boundary to bytes
+                    boundary = boundary.encode('ascii')  
 
-                    # Set the boundary correctly
+                    # Parse the form data
                     form_data = cgi.parse_multipart(self.rfile, {'boundary': boundary})
 
-                    # Get the image file from the form field
+                    # Get image data
                     image_data = form_data.get('image', [None])[0]
+                    # Get features field
+                    features = form_data.get('features', [None])[0]
+
                     if image_data:
                         nparr = np.frombuffer(image_data, np.uint8)
                         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
                         if image is not None:
-                            response = search_similar_images(image)
+                            response = search_similar_images(image, features)
                             for item in response:
-                                item['file'] = IMAGE_URL_PREFIX+item['file']
+                                item['file'] = IMAGE_URL_PREFIX + item['file']
 
                             self.send_response(200)
                             self.send_header("Content-type", "application/json")
@@ -62,27 +65,27 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.send_error(400, "Boundary not found")
             else:
                 self.send_error(400, "Expected multipart/form-data")
+
         elif self.path == "/feedback":
             # Parse content length and type
             content_length = int(self.headers['Content-Length'])
             content_type = self.headers['Content-Type']
 
-            # Ensure content type is JSON
             if content_type == "application/json":
-                # Read and parse JSON body
                 body = self.rfile.read(content_length)
                 data = json.loads(body)
 
-                # Extract 'file_keys' from request
+                # Extract file_keys and features
                 file_keys = data.get('file_keys', [])
+                features = data.get('features', None)
 
                 if not isinstance(file_keys, list):
                     self.send_error(400, "file_keys must be a list")
                     return
 
-                # Process the file_keys list
+                # Remove prefix from file keys
                 file_keys = [item.replace(IMAGE_URL_PREFIX, '') for item in file_keys]  
-                response = search_similar_images_from_keys(file_keys)
+                response = search_similar_images_from_keys(file_keys, features)
                 for item in response:
                     item['file'] = IMAGE_URL_PREFIX + item['file']
 
@@ -91,7 +94,6 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps(response).encode())
-
             else:
                 self.send_error(400, "Expected application/json")
         else:
