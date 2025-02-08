@@ -5,9 +5,7 @@ import skimage.color as skc
 from skimage.filters import sobel
 from skimage.transform import resize
 import os
-from sklearn.decomposition import PCA
 from elasticsearch import Elasticsearch
-import matplotlib.pyplot as plt
 import pywt
 
 from dotenv import load_dotenv
