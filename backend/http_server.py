@@ -4,22 +4,52 @@ import cgi
 import cv2
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import numpy as np
+from search import search_similar_images, search_similar_images_from_keys
 from dotenv import load_dotenv
+
 load_dotenv()
-
-from custom_functions import search_similar_images, search_similar_images_from_keys
-
 PORT = os.getenv('PORT')
 IMAGE_URL_PREFIX = os.getenv('IMAGE_URL_PREFIX')
+IMAGE_FOLDER = os.getenv('IMAGE_FOLDER', 'images')
+
+print("IMAGE_FOLDER:", IMAGE_FOLDER)
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         """Handles OPTIONS requests for CORS preflight"""
         self.send_response(204)  # No Content
         self.send_header("Access-Control-Allow-Origin", "*")  # Allow all origins
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")  # Allowed methods
+        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS, GET")  # Allowed methods
         self.send_header("Access-Control-Allow-Headers", "Content-Type")  # Allowed headers
         self.end_headers()
+
+    def do_GET(self):
+        """Handles GET requests for serving images"""
+        if self.path.startswith("/img/"):
+            filename = self.path[len("/img/"):]  # Extract filename
+            file_path = os.path.join(IMAGE_FOLDER, filename)
+
+            # Validate if the file exists
+            if os.path.isfile(file_path):
+                # Guess MIME type
+                _, ext = os.path.splitext(filename)
+                mime_type = {
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".png": "image/png",
+                    ".gif": "image/gif",
+                }.get(ext.lower(), "application/octet-stream")
+
+                # Serve the file
+                self.send_response(200)
+                self.send_header("Content-Type", mime_type)
+                self.end_headers()
+                with open(file_path, "rb") as f:
+                    self.wfile.write(f.read())
+            else:
+                self.send_error(404, "File not found")
+        else:
+            self.send_error(404, "Not Found")
 
     def do_POST(self):
         if self.path == "/upload":
