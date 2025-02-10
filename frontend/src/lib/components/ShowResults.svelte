@@ -3,9 +3,14 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { selectedFeatures } from '$lib/store/store.js';
 
+	type ResultItem = {
+		file: string;
+		_score: number;
+	};
+
 	export let selectedImage: File | null;
 
-	let result: Array<Object> | null = null;
+	let result: ResultItem[] | null = null;
 	let isError = false;
 	let isLoading = false;
 	let localImagePreview: string | null = null;
@@ -68,8 +73,7 @@
 <div class="results">
 	<div class="container">
 		<div class="left-panel">
-			<!-- svelte-ignore a11y-img-redundant-alt -->
-			<img src={localImagePreview} alt="Selected image preview" class="preview" />
+			<img src={localImagePreview} alt="Selected file preview" class="preview" />
 		</div>
 
 		<div class="divider" />
@@ -81,12 +85,14 @@
 				<p>The response has an error, Please retry!</p>
 			{:else if result && result.length > 0}
 				<div class="image-grid">
-					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-					<!-- svelte-ignore a11y-img-redundant-alt -->
 					{#each result.slice(0, 10) as item, index}
-						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<!-- svelte-ignore a11y-no-static-element-interactions -->
-						<div class="image-container" on:click={() => toggleSelection(item)}>
+						<div
+							class="image-container"
+							role="button"
+							tabindex="0"
+							on:click={() => toggleSelection(item)}
+							on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleSelection(item)}
+						>
 							<div class="image-overlay-l">
 								<span>#{index + 1}</span>
 							</div>
@@ -96,7 +102,7 @@
 
 							<img
 								src={item.file}
-								alt="Result image"
+								alt="Result file"
 								class="grid-image {selectedResults.some((selected) => selected === item.file)
 									? 'selected'
 									: ''}"
@@ -125,10 +131,6 @@
 		align-items: center;
 		text-align: center;
 		gap: 15px;
-
-		h2 {
-			color: var(--primary-text);
-		}
 
 		.container {
 			display: flex;
@@ -256,10 +258,6 @@
 	}
 	.image-overlay-l {
 		left: 5px;
-	}
-
-	.image-overlay span {
-		display: block;
 	}
 
 	.divider {

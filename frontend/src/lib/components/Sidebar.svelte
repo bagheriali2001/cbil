@@ -17,6 +17,9 @@
 
 	let pre_selected = [''];
 
+	/**
+	 * @param {string} item
+	 */
 	function toggleSelection(item) {
 		selectedFeatures.update((current) => {
 			if (current.includes(item)) {
@@ -39,7 +42,10 @@
 		{#each items as item}
 			<div
 				class="item {$selectedFeatures.includes(item.id) ? 'selected' : ''}"
+				role="button"
+				tabindex="0"
 				on:click={() => toggleSelection(item.id)}
+				on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleSelection(item.id)}
 			>
 				{item.name}
 			</div>
@@ -48,7 +54,7 @@
 
 	<div class="button-group">
 		<button class="confirm-btn" on:click={closeSidebar}>Confirm</button>
-		<button class="reset-btn" on:click={() => selectedFeatures.set([])}>Reset</button>
+		<button class="reset-btn" on:click={() => selectedFeatures.set(['mean'])}>Reset</button>
 	</div>
 </div>
 

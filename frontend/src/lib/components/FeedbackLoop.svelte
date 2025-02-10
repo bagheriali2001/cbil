@@ -3,10 +3,15 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { selectedFeatures } from '$lib/store/store.js';
 
+	type ResultItem = {
+		file: string;
+		_score: number;
+	};
+
 	export let feedbackImages: Array<string> = [];
 
 	let selectedImageUrl: string | null = null;
-	let result: Array<Object> | null = null;
+	let result: ResultItem[] | null = null;
 	let isLoading = false;
 	let isError = false;
 	let selectedResults: Array<string> = [];
@@ -75,8 +80,7 @@
 			<div class="image-grid-l">
 				{#each feedbackImages as url, index}
 					<div class="image-container">
-						<!-- svelte-ignore a11y-img-redundant-alt -->
-						<img src={url} alt="Result image" class="grid-image" />
+						<img src={url} alt="Result file" class="grid-image" />
 					</div>
 				{/each}
 			</div>
@@ -91,20 +95,23 @@
 				<p>The response has an error, Please retry!</p>
 			{:else if result && result.length > 0}
 				<div class="image-grid">
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					{#each result.slice(0, 10) as item, index}
-						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<div class="image-container" on:click={() => toggleSelection(item)}>
+						<div
+							class="image-container"
+							role="button"
+							tabindex="0"
+							on:click={() => toggleSelection(item)}
+							on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleSelection(item)}
+						>
 							<div class="image-overlay-l">
 								<span>#{index + 1}</span>
 							</div>
 							<div class="image-overlay-r">
 								<span>Score: {Math.trunc(item._score * 100) / 100}</span>
 							</div>
-							<!-- svelte-ignore a11y-img-redundant-alt -->
 							<img
 								src={item.file}
-								alt="Result image"
+								alt="Result file"
 								class="grid-image {selectedResults.some((selected) => selected === item.file)
 									? 'selected'
 									: ''}"

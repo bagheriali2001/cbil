@@ -36,9 +36,13 @@
 <div class="home">
 	<div class="home-section">
 		<!-- Sidebar Toggle Button -->
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<div class="menu-btn" on:click={toggleSidebar}>
+		<div
+			class="menu-btn"
+			role="button"
+			tabindex="0"
+			on:click={() => toggleSidebar()}
+			on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleSidebar()}
+		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				x="0px"
