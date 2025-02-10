@@ -68,7 +68,7 @@ def get_features (image, image_path):
 
 def process_images_in_folder_to_elastic(folder_path):
     i = 1
-    process_files = False
+    process_files = True
     start_from = 0
     files = os.listdir(folder_path)
     files.sort()
