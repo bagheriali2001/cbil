@@ -1,5 +1,5 @@
-FROM python:3.10.9-slim
-RUN apt update && apt install -y libgl1-mesa-glx
+FROM python:3.10.9
+RUN apt-get update && apt-get install -y libgl1
 
 WORKDIR /app
 
