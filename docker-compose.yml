@@ -1,21 +1,21 @@
 services:
-  image-processing-frontend:
-    image: image-processing-frontend:latest
+  cbil-frontend:
+    image: cbil-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: image-processing-frontend
+    container_name: cbil-frontend
     restart: always
     networks:
       - main_network
     env_file:
       - ./frontend/.env
-  image-processing-backend:
-    image: image-processing-backend:latest
+  cbil-backend:
+    image: cbil-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: image-processing-backend
+    container_name: cbil-backend
     restart: always
     networks:
       - main_network
