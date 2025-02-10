@@ -7,6 +7,7 @@ COPY requirements.txt /app/
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY .env /app/
 COPY http_server.py /app/
 COPY image_processing.py /app/
 COPY search.py /app/
