@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
-	import { selectedFeatures } from '$lib/store/store.js'; // Import the store
+	import { selectedFeatures } from '$lib/store/store.js';
 
 	export let feedbackImages: Array<string> = [];
 
 	let selectedImageUrl: string | null = null;
 	let result: Array<Object> | null = null;
 	let isLoading = false;
+	let isError = false;
 	let selectedResults: Array<string> = [];
 	const dispatch = createEventDispatcher();
 
@@ -15,6 +16,7 @@
 		let urls = feedbackImages;
 		if (urls.length == 0) return;
 
+		isError = false;
 		isLoading = true;
 		result = null;
 
@@ -32,6 +34,7 @@
 				console.error('Processing failed:', data);
 			}
 		} catch (error) {
+			isError = true;
 			console.error('Error processing image:', error);
 		} finally {
 			isLoading = false;
@@ -84,7 +87,8 @@
 		<div class="right-panel">
 			{#if isLoading}
 				<p>Loading results...</p>
-				<div class="loader" />
+			{:else if isError}
+				<p>The response has an error, Please retry!</p>
 			{:else if result && result.length > 0}
 				<div class="image-grid">
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -115,7 +119,7 @@
 	</div>
 
 	<div class="button-group">
-		<button on:click={resetSelection} class="reset-btn">Clear Selection</button>
+		<button on:click={resetSelection} class="reset-btn">Upload Another Image</button>
 		<button on:click={getFeedback} class="retry-btn">Retry Upload</button>
 		{#if selectedResults.length > 0}
 			<button on:click={updateResults} class="update-btn">Update the Results</button>
@@ -176,6 +180,7 @@
 			height: 100px;
 			object-fit: cover;
 			border-radius: 5px;
+			box-shadow: 0 2px 4px var(--box-shadow-primary);
 			cursor: pointer;
 			transition: border 0.3s ease, transform 0.2s ease;
 			border: 2px solid transparent;
@@ -186,17 +191,8 @@
 		}
 
 		.grid-image.selected {
-			border: 3px solid #28a745;
-			box-shadow: 0 0 8px rgba(40, 167, 69, 0.7);
-		}
-
-		@keyframes spin {
-			0% {
-				transform: rotate(0deg);
-			}
-			100% {
-				transform: rotate(360deg);
-			}
+			border: 3px solid var(--select-primary);
+			box-shadow: 0 0 8px var(--select-primary-shadow);
 		}
 
 		.button-group {
@@ -214,41 +210,32 @@
 			cursor: pointer;
 			transition: background-color 0.3s ease;
 			border: none;
-			color: #ffffff;
+			color: var(--light-0);
 		}
 
 		.reset-btn {
-			background-color: #444444;
+			background-color: var(--reset-primary);
 		}
 
 		.reset-btn:hover {
-			background-color: #333333;
+			background-color: var(--reset-primary-hover);
 		}
 
 		.update-btn {
-			background-color: #28a745;
+			background-color: var(--update-primary);
 		}
 
 		.update-btn:hover {
-			background-color: #218838;
+			background-color: var(--update-primary-hover);
 		}
 
 		.retry-btn {
-			background-color: #f0ad4e;
+			background-color: var(--features-primary);
 		}
 
 		.retry-btn:hover {
-			background-color: #ec971f;
+			background-color: var(--features-primary-hover);
 		}
-	}
-
-	.loader {
-		width: 50px;
-		height: 50px;
-		border: 5px solid rgba(0, 0, 0, 0.1);
-		border-top: 5px solid var(--primary);
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
 	}
 
 	.image-container {
@@ -256,31 +243,35 @@
 		display: flex;
 	}
 
-	.image-overlay-l,
-	.image-overlay-r {
+	.image-overlay-r,
+	.image-overlay-l {
 		position: absolute;
 		top: 5px;
-		background: rgba(0, 0, 0, 0.7);
-		color: white;
+		background: var(--img-overlay-primary);
+		color: var(--img-overlay-text);
 		font-size: 12px;
 		padding: 4px 6px;
 		border-radius: 4px;
 		display: flex;
+		flex-direction: column;
 		align-items: flex-start;
 		z-index: 10;
-	}
-
-	.image-overlay-l {
-		left: 5px;
 	}
 
 	.image-overlay-r {
 		right: 5px;
 	}
+	.image-overlay-l {
+		left: 5px;
+	}
+
+	.image-overlay span {
+		display: block;
+	}
 
 	.divider {
-		width: 1px; /* Thickness of the line */
-		background-color: #929292; /* Gray color */
+		width: 1px;
+		background-color: var(--divider-primary);
 		align-self: stretch;
 	}
 </style>

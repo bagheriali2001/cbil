@@ -8,7 +8,7 @@
 		{ name: 'Color Histogram', id: 'hist' },
 		{ name: 'GLCM', id: 'glcm' },
 		{ name: 'HOG', id: 'hog' },
-		{ name: 'GIST', id: 'gist' },
+		{ name: 'Simplified GIST', id: 'gist' },
 		{ name: 'DCT', id: 'dct' },
 		{ name: 'Wavelet', id: 'wavelet' },
 		{ name: 'Harris Corners', id: 'corners' }
@@ -33,7 +33,7 @@
 </script>
 
 <div class="sidebar {isOpen ? 'open' : ''}">
-	<h3>Select Items</h3>
+	<h3>Select Features</h3>
 
 	<div class="item-list">
 		{#each items as item}
@@ -59,15 +59,14 @@
 		right: 0;
 		width: 320px;
 		height: 100%;
-		background: #070707;
-		box-shadow: -2px 0 10px rgba(255, 165, 0, 0.3);
+		background: var(--dark-2);
+		box-shadow: -2px 0 10px var(--select-primary-shadow);
 		transform: translateX(100%);
 		transition: transform 0.3s ease-in-out;
 		padding: 20px;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		border-left: 2px solid #e17f00;
 		z-index: 900;
 	}
 
@@ -76,7 +75,9 @@
 	}
 
 	.sidebar h3 {
-		color: #e17f00;
+		color: var(--features-primary);
+		font-weight: 600;
+		font-size: large;
 		text-align: center;
 	}
 
@@ -90,9 +91,8 @@
 	.item {
 		padding: 12px;
 		cursor: pointer;
-		border-bottom: 1px solid #222;
-		background-color: #111;
-		color: #aaaaaa;
+		background-color: var(--dark-0);
+		color: var(--light-4);
 		transition: background 0.3s ease;
 		border-radius: 5px;
 		margin: 5px 0;
@@ -100,29 +100,17 @@
 	}
 
 	.item:hover {
-		background: #222221;
+		background: var(--features-secondary-hover);
+		color: var(--light-1);
 	}
 
 	.item.selected {
-		background: #e17f00;
-		color: white;
+		background: var(--features-primary);
+		color: var(--light-0);
 	}
 
-	.close-btn {
-		position: absolute;
-		top: 10px;
-		right: 10px;
-		background: red;
-		color: white;
-		border: none;
-		padding: 8px 12px;
-		cursor: pointer;
-		border-radius: 5px;
-		transition: background 0.3s ease;
-	}
-
-	.close-btn:hover {
-		background: darkred;
+	.item.selected:hover {
+		background: var(--features-primary-hover);
 	}
 
 	.button-group {
@@ -140,22 +128,22 @@
 		cursor: pointer;
 		transition: background-color 0.3s ease;
 		border: none;
-		color: #ffffff;
+		color: var(--light-0);
 	}
 
 	.confirm-btn {
-		background-color: #e17f00;
+		background-color: var(--features-primary);
 	}
 
 	.confirm-btn:hover {
-		background-color: #d67500;
+		background-color: var(--features-primary-hover);
 	}
 
 	.reset-btn {
-		background-color: #444444;
+		background-color: var(--reset-primary);
 	}
 
 	.reset-btn:hover {
-		background-color: #333333;
+		background-color: var(--reset-primary-hover);
 	}
 </style>

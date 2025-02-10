@@ -1,12 +1,11 @@
 <script lang="ts">
-	import MainTitle from '$lib/components/MainTitle.svelte';
 	import ImageUploader from '$lib/components/ImageUploader.svelte';
-	import ShowResults from '$lib/components/ShowResults.svelte'; // Import the ShowResults component
+	import ShowResults from '$lib/components/ShowResults.svelte';
 	import FeedbackLoop from '$lib/components/FeedbackLoop.svelte';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
-	let selectedImage: File | null = null; // Declare a reactive variable for the selected image
-	let feedbackImages: Array<string> = []; // Declare a reactive variable for the selected image
+	let selectedImage: File | null = null;
+	let feedbackImages: Array<string> = [];
 	let feedbackLoopStarted: boolean = false;
 
 	const handleImageSelected = (event: CustomEvent) => {
@@ -14,12 +13,10 @@
 	};
 	const handleUpdateFeedbackLoop = (event: CustomEvent) => {
 		feedbackImages = event.detail.selectedResults;
-		console.log('feedbackImages: ', feedbackImages);
 		feedbackLoopStarted = true;
 		selectedImage = null;
 	};
 	const handleReset = () => {
-		console.log('Handle Reset !!');
 		feedbackImages = [];
 		selectedImage = null;
 		feedbackLoopStarted = false;
@@ -28,7 +25,6 @@
 	let isOpen = false;
 
 	function toggleSidebar() {
-		console.log('toggleSidebar');
 		isOpen = !isOpen;
 	}
 </script>
@@ -78,7 +74,9 @@
 
 		<Sidebar on:toggleSidebar={toggleSidebar} {isOpen} />
 
-		<MainTitle classes="!text-left">Welcome To CBIL Search</MainTitle>
+		<h1 class={`text-[2.5em] sm:text-[3em] md:text-[3.5em] lg:text-[4em] !text-left`}>
+			Welcome To CBIL Search
+		</h1>
 		{#if selectedImage || feedbackLoopStarted}
 			{#if feedbackLoopStarted}
 				<FeedbackLoop
@@ -111,7 +109,7 @@
 		padding: 0px 10px;
 
 		&-subtitle {
-			color: var(--tertiary-text);
+			color: var(--light-2);
 			font-size: 1.35em;
 			font-weight: 200;
 		}
@@ -143,24 +141,36 @@
 		right: 20px;
 		width: 50px;
 		height: 50px;
-		background: #444444;
+		background: var(--dark-6);
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		cursor: pointer;
-		box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+		box-shadow: 0px 4px 6px var(--box-shadow-secondary);
 		transition: background 0.3s ease, transform 0.2s;
 	}
 
 	.menu-btn:hover {
-		background: #333333;
+		background: var(--dark-8);
 		transform: scale(1.1);
 	}
 
 	.menu-icon {
-		width: 30px;
-		height: 30px;
-		fill: white;
+		width: 40px;
+		height: 40px;
+		fill: var(--light-0);
+	}
+
+	h1 {
+		font-family: var(--title-f);
+		font-weight: 900;
+		letter-spacing: 4px;
+		text-align: center;
+
+		background: linear-gradient(var(--light-0), var(--light-4));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
 </style>

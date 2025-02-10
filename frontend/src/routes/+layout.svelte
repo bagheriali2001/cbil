@@ -2,7 +2,7 @@
 	import '$lib/index.scss';
 </script>
 
-<div class={`body contents `}>
+<div class={`body contents`}>
 	<div class="content container"><slot /></div>
 </div>
 
@@ -16,8 +16,8 @@
 
 	.body {
 		margin: 0px;
-		background-color: var(--main);
-		color: var(--main-text);
+		background-color: var(--dark-0);
+		color: var(--light-0);
 		font-family: var(--text-f);
 		display: flex;
 		flex-direction: column;
