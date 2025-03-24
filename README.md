@@ -1,5 +1,7 @@
 # CBIL
 
+A CBIR Project (The name is a joke. You can read it as "سیبیل" which means "Mustache" in Farsi)
+
 ## Initializing Elasticsearch Index
 
 Run these commands on Elasticsearch console:
